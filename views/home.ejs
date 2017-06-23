@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Node Socket.IO Example</title>
+        <style>
+            #do, #xanh, #vang {
+                width: 300px;
+                height: 70px;
+                cursor: pointer;
+            }
+            #do {
+                background: red;
+            }
+            #xanh {
+                background: blue;
+            }
+            #vang {
+                background: yellow;
+            }
+        </style>
+    </head>
+    <body bgColor="pink">
+        <div id="do"></div>
+        <div id="xanh"></div>
+        <div id="vang"></div>
+
+        <script src="jquery.js"></script>
+        <script src="socket.io/socket.io.js"></script>
+
+        <script>
+            var socket = io("http://localhost:3000");
+
+            socket.on("SERVER_RESPONSE_COLOR", function (data) {
+                $('body').attr('bgColor', data);
+            });
+
+            $(function () {
+                $('#do').click(function () {
+                    socket.emit("CLIENT_SEND_COLOR", "red");
+                });
+                $('#xanh').click(function () {
+                    socket.emit("CLIENT_SEND_COLOR", "blue");
+                });
+                $('#vang').click(function () {
+                    socket.emit("CLIENT_SEND_COLOR", "yellow");
+                });
+            });
+        </script>
+
+    </body>
+</html>
