@@ -2,50 +2,81 @@
     <head>
         <meta charset="utf-8" />
         <title>Node Socket.IO Example</title>
-        <style>
-            #do, #xanh, #vang {
-                width: 300px;
-                height: 70px;
-                cursor: pointer;
-            }
-            #do {
-                background: red;
-            }
-            #xanh {
-                background: blue;
-            }
-            #vang {
-                background: yellow;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="css/layout.css" />
     </head>
-    <body bgColor="pink">
-        <div id="do"></div>
-        <div id="xanh"></div>
-        <div id="vang"></div>
+    <body>
+        <div id="wrapper" class="container">
+            <div id="loginForm">
+                <h3>What's your name?</h3>
+                <input type="text" placeholder="Enter your name..." class="form-control" id="txtUsername">
+                <input style="margin-top:10px;" type="button" class="btn btn-primary" value="Register" id="btnRegister">
+            </div>
 
-        <script src="jquery.js"></script>
+            <div id="chatForm" class="col-md-12">
+                <div id="sayHi">
+                    <button onclick="jQuery('#new_room_modal').modal('show');" class="btn btn-success pull-left" id="btnAddRoom">
+                        <i class="fa fa-plus"></i> Add room
+                    </button>
+                    Hello <span id="currentUser"></span>
+                    <button class="btn btn-danger pull-right" id="btnLogout">
+                        <i class="fa fa-sign-out"></i> Logout
+                    </button> 
+                </div>
+                <div id="left">
+                    <div class="boxTitle">Users online</div>
+                    <div id="boxUser"></div>
+                    <div class="boxTitle">Rooms</div>
+                    <div id="boxRoom"></div>
+                </div>
+                <div id="right">
+                    
+                    <div id="currentRoom" class="text-center">
+                        You are in <span style="color:red">GENERAL</span> room
+                    </div>
+
+                    <div id="listMessages"></div>
+
+                    <div id="typing"></div>
+
+                    <div id="boxSend">
+                        <input type="text" class="form-control pull-left" id="txtMessage" placeholder="Enter message...">
+                        <button class="btn btn-primary pull-right" id="btnSendMessage">
+                            <i class="fa fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade modal-info" id="new_room_modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form>
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            <h4 class="modal-title"><i class="fa fa-users"></i> Tạo room</h4>
+                        </div>
+
+                        <div class="modal-body">
+                            <input name="new_room_name" id="new_room_name" placeholder="Enter room name..." required class="form-control" value=""/>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Thoát</button>
+                            <button type="button" class="btn btn-success" id="btnAddNewRoom">Tạo ngay
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script src="js/jquery.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="socket.io/socket.io.js"></script>
-
-        <script>
-            var socket = io("http://localhost:3000");
-
-            socket.on("SERVER_RESPONSE_COLOR", function (data) {
-                $('body').attr('bgColor', data);
-            });
-
-            $(function () {
-                $('#do').click(function () {
-                    socket.emit("CLIENT_SEND_COLOR", "red");
-                });
-                $('#xanh').click(function () {
-                    socket.emit("CLIENT_SEND_COLOR", "blue");
-                });
-                $('#vang').click(function () {
-                    socket.emit("CLIENT_SEND_COLOR", "yellow");
-                });
-            });
-        </script>
-
+        <script src="js/process.js"></script>
     </body>
 </html>
