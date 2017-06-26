@@ -8,6 +8,7 @@
     </head>
     <body>
         <div id="wrapper" class="container">
+            <input type="hidden" id="socketID" value="" />
             <div id="loginForm">
                 <h3>What's your name?</h3>
                 <input type="text" placeholder="Enter your name..." class="form-control" id="txtUsername">
@@ -38,14 +39,13 @@
 
                     <div id="listMessages"></div>
 
-                    <div id="typing"></div>
-
                     <div id="boxSend">
                         <input type="text" class="form-control pull-left" id="txtMessage" placeholder="Enter message...">
                         <button class="btn btn-primary pull-right" id="btnSendMessage">
                             <i class="fa fa-paper-plane"></i> Send
                         </button>
                     </div>
+                    <div id="typing"></div>
                 </div>
             </div>
         </div>

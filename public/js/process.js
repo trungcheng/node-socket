@@ -1,5 +1,9 @@
 var socket = io("http://localhost:3000");
 
+socket.on("SOCKET_ID", function (data) {
+    $('#socketID').val(data);
+});
+
 socket.on("SERVER_RESPONSE_EXISTED_USER", function (data) {
     alert("This username already exists!");
 });
@@ -7,7 +11,7 @@ socket.on("SERVER_RESPONSE_EXISTED_USER", function (data) {
 socket.on("USERS_ONLINE_LIST", function (data) {
     $('#boxUser').html('');
     data.forEach(function (i) {
-        $('#boxUser').append('<p style="cursor:pointer">'+ i +'</p>');
+        $('#boxUser').append('<p class="user-item" data-socket-id="'+ i.socketId +'" style="cursor:pointer">'+ i.userName +'</p>');
     });
 });
 
@@ -18,7 +22,7 @@ socket.on("SERVER_RESPONSE_REGISTER_SUCCESS", function (data) {
 });
 
 socket.on("SERVER_RESPONSE_MESSAGE", function (data) {
-    $('#listMessages').append("<p class='text-left'><span style='font-weight:bold'>" + data.username + "</span>: " + data.content +"</p>");
+    $('#listMessages').append("<p class='text-left'><span style='font-weight:bold'>" + data.username + "</span>: " + data.content + " (" + new Date().toLocaleString("en-US", { hour: "numeric",minute:"numeric", hour12: true }) + ")</p>");
 });
 
 socket.on("SERVER_RESPONSE_TYPING", function (data) {
@@ -42,10 +46,15 @@ socket.on("SERVER_RESPONSE_ROOM_SOCKET", function (data) {
 });
 
 socket.on("UPDATE_LOG", function (data) {
-    $('#listMessages').prepend('<i style="display:block;opacity:0.6">- '+data+'</i>');
+    $('#listMessages').prepend('<i class="log" style="display:block;opacity:0.6">- '+ data + ' (' + new Date().toLocaleString('en-US', { hour: 'numeric',minute:'numeric', hour12: true }) + ')' +'</i>');
+});
+
+socket.on("SERVER_RESPONSE_USER_PRIVATE", function (data) {
+    $('#currentRoom').html('You are chatting with <span style="color:red">' + data + '</span>');
 });
 
 $(function () {
+    $('.log').delay(10000).fadeOut();
     $('#loginForm').show();
     $('#chatForm').hide();
 
@@ -81,5 +90,9 @@ $(function () {
 
     $(document).on('click', '.roomItem', function () {
         socket.emit('SWITCH_ROOM', $(this).text());
+    });
+
+    $(document).on('click', '.user-item', function () {
+        socket.emit('SEND_PRIVATE', $(this).data('socket-id'), $(this).text());
     });
 });

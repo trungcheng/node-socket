@@ -17,7 +17,6 @@ body {
 #right {
 	width: 70%;
 	float: right;
-	position: relative;
 }
 #loginForm {
 	margin-bottom: 20px;
@@ -71,8 +70,6 @@ body {
 	font-weight: bold;
 }
 #typing {
-	position: absolute;
-	bottom: 35px;
 	opacity: 0.5;
 	padding-left: 15px;
 }
