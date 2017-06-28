@@ -1,8 +1,6 @@
-var socket = io("http://localhost:3000");
+'use strict';
 
-socket.on("SOCKET_ID", function (data) {
-    $('#socketID').val(data);
-});
+var socket = io("http://localhost:3000");
 
 socket.on("SERVER_RESPONSE_EXISTED_USER", function (data) {
     alert("This username already exists!");
@@ -46,7 +44,7 @@ socket.on("SERVER_RESPONSE_ROOM_SOCKET", function (data) {
 });
 
 socket.on("UPDATE_LOG", function (data) {
-    $('#listMessages').prepend('<i class="log" style="display:block;opacity:0.6">- '+ data + ' (' + new Date().toLocaleString('en-US', { hour: 'numeric',minute:'numeric', hour12: true }) + ')' +'</i>');
+    $('#listMessages').append('<i class="log" style="display:block;opacity:0.6">- '+ data + ' (' + new Date().toLocaleString('en-US', { hour: 'numeric',minute:'numeric', hour12: true }) + ')' +'</i>');
 });
 
 socket.on("SERVER_RESPONSE_USER_PRIVATE", function (data) {

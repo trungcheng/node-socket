@@ -1,33 +1,34 @@
+'use strict';
+
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 var arrayUsers = [];
-var arrayUserOnline = [];
-var arrayRooms = ['GENERAL', 'REACT_REDUX', 'NODEJS'];
+var arrayRooms = ['NODEJS', 'REDUX'];
 
 io.on('connection', function (socket) {
     console.log('Có người kết nối: ', socket.id);
 
-    socket.emit("SOCKET_ID", socket.id);
-
     socket.on("CLIENT_SEND_USERNAME", function (userName) {
-        if (arrayUserOnline.indexOf(userName) >= 0) {
+        if (arrayUsers.indexOf(userName) >= 0) {
             socket.emit("SERVER_RESPONSE_EXISTED_USER");
         } else {
+            roomID = null;
             arrayUsers.push({
-                socketId : socket.id,
-                userName : userName
+                username: userName,
+                socketId: socket.id
             });
-            arrayUserOnline.push(userName);
+
             socket.username = userName;
-            socket.room = 'GENERAL';
-            socket.join('GENERAL');
+            socket.room = arrayRooms[0];
+            
+            socket.join(arrayRooms[0]);
             // send to yourself message
             socket.emit("SERVER_RESPONSE_REGISTER_SUCCESS", userName);
             // send to all others notify without yourself
-            socket.broadcast.emit('UPDATE_LOG', data.userName + ' has connected to this room');
+            socket.broadcast.emit('UPDATE_LOG', userName + ' has connected to this room');
             // emit to all users online list without yourself
             io.sockets.emit("USERS_ONLINE_LIST", arrayUsers);
             // emit all rooms available to all users
@@ -109,6 +110,7 @@ io.on('connection', function (socket) {
         console.log(socket.id + ' vừa ngắt kết nối');
         // remove the username from global usernames list
         arrayUsers.splice(arrayUsers.indexOf(socket.username), 1);
+        delete people[socket.id];
         // emit to all users without yourself
         socket.broadcast.emit("USERS_ONLINE_LIST", arrayUsers);
         socket.leave(socket.room);
