@@ -6,7 +6,8 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 var arrayUsers = [];
-var arrayRooms = ['NODEJS', 'REDUX'];
+var onlineUsers = [];
+var arrayRooms = ['NODEJS', 'REDUX', 'LARAVEL'];
 
 io.on('connection', function (socket) {
     console.log('Có người kết nối: ', socket.id);
@@ -15,8 +16,8 @@ io.on('connection', function (socket) {
         if (arrayUsers.indexOf(userName) >= 0) {
             socket.emit("SERVER_RESPONSE_EXISTED_USER");
         } else {
-            roomID = null;
-            arrayUsers.push({
+            arrayUsers.push(userName);            
+            onlineUsers.push({
                 username: userName,
                 socketId: socket.id
             });
@@ -30,16 +31,10 @@ io.on('connection', function (socket) {
             // send to all others notify without yourself
             socket.broadcast.emit('UPDATE_LOG', userName + ' has connected to this room');
             // emit to all users online list without yourself
-            io.sockets.emit("USERS_ONLINE_LIST", arrayUsers);
+            io.sockets.emit("USERS_ONLINE_LIST", onlineUsers);
             // emit all rooms available to all users
             io.sockets.emit("CURRENT_ROOM_LIST", arrayRooms);
         }
-    });
-
-    socket.on("USER_LOGOUT", function () {
-        arrayUsers.splice(arrayUsers.indexOf(socket.username), 1);
-        // emit to all users without yourself
-        socket.broadcast.emit("USERS_ONLINE_LIST", arrayUsers);
     });
 
     socket.on("SEND_MESSAGE", function (data) {
@@ -106,13 +101,16 @@ io.on('connection', function (socket) {
         socket.emit("SERVER_RESPONSE_USER_PRIVATE", userName);
     });
 
-    socket.on('disconnect', function () {
+    socket.on('DISCONNECT', function () {
         console.log(socket.id + ' vừa ngắt kết nối');
         // remove the username from global usernames list
         arrayUsers.splice(arrayUsers.indexOf(socket.username), 1);
-        delete people[socket.id];
+        onlineUsers.splice(onlineUsers.indexOf({
+            username: socket.username,
+            socketId: socket.id
+        }), 1);
         // emit to all users without yourself
-        socket.broadcast.emit("USERS_ONLINE_LIST", arrayUsers);
+        socket.broadcast.emit("USERS_ONLINE_LIST", onlineUsers);
         socket.leave(socket.room);
     });
 });

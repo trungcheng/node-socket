@@ -9,7 +9,7 @@ socket.on("SERVER_RESPONSE_EXISTED_USER", function (data) {
 socket.on("USERS_ONLINE_LIST", function (data) {
     $('#boxUser').html('');
     data.forEach(function (i) {
-        $('#boxUser').append('<p class="user-item" data-socket-id="'+ i.socketId +'" style="cursor:pointer">'+ i.userName +'</p>');
+        $('#boxUser').append('<p class="user-item" data-socket-id="'+ i.socketId +'" style="cursor:pointer">'+ i.username +'</p>');
     });
 });
 
@@ -62,7 +62,7 @@ $(function () {
     });
 
     $('#btnLogout').click(function () {
-        socket.emit("USER_LOGOUT");
+        socket.emit("DISCONNECT");
         $('#chatForm').hide(2000);
         $('#loginForm').show(1000);
     });
